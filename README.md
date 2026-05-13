@@ -180,7 +180,7 @@ npm run dev
 
 - Next.js
 - React.js
-- Tailwind CSS
+- bosstrap CSS
 
 ---
 
