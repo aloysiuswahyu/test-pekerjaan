@@ -49,7 +49,7 @@ $routes->group('api', function ($routes) {
             $routes->get('list', 'Api\EmployeeController::index');
             $routes->post('create', 'Api\EmployeeController::create');
             $routes->get('show/(:num)', 'Api\EmployeeController::show/$1');
-            $routes->put('edit/(:num)', 'Api\EmployeeController::update/$1');
+            $routes->post('edit/(:num)', 'Api\EmployeeController::update/$1');
             $routes->delete('delete/(:num)', 'Api\EmployeeController::delete/$1');
         });
     });

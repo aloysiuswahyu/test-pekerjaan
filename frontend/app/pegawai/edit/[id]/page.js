@@ -273,7 +273,7 @@ export default function EditPegawaiPage() {
       }
 
       // update data
-      await api.put(
+      await api.post(
         `/employee/edit/${params.id}`,
         data,
         {
