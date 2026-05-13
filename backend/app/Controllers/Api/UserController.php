@@ -103,6 +103,7 @@ class UserController extends BaseController
         $this->db->transBegin();
         try {
             $data = [
+                'name' => $data['name'],
                 'username' => $data['username'],
                 'password' => password_hash(
                     $data['password'],

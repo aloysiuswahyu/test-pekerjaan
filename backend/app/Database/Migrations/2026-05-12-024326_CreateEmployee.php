@@ -28,7 +28,6 @@ class CreateEmployee extends Migration
             'jabatan' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
-                'unsigned' => true,
             ],
             'alamat' => [
                 'type' => 'TEXT',
@@ -51,13 +50,6 @@ class CreateEmployee extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey(
-            'position_id',
-            'positions',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
 
         $this->forge->createTable('employee');
     }

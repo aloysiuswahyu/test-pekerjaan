@@ -95,20 +95,29 @@ class EmployeeController extends BaseController
             ]);
         }
         $this->db->transBegin();
-        $imgName = null;
+        $imgName = '';
         try {
-            $img = $this->request->getFile('photo');
+            // $img = $this->request->getFile('foto');
 
-            if ($img && $img->isValid()) {
-                $imgName = $img->getRandomName();
+            // if ($img && $img->isValid()) {
+            //     $imgName = $img->getRandomName();
 
-                $img->move('uploads', $imgName);
-            }
+            //     $img->move('uploads', $imgName);
+            // }
+            // echo '<pre>';
+            // print_r([
+            //     'name' => $this->request->getPost('name'),
+            //     'nip' => $this->request->getPost('nip'),
+            //     'jabatan' => $this->request->getPost('jabatan'),
+            //     'alamat' => $this->request->getPost('alamat'),
+            //     'photo' => $imgName,
+            // ]);
+            // exit;
 
             $this->model->save([
                 'name' => $this->request->getPost('name'),
                 'nip' => $this->request->getPost('nip'),
-                'jabatan' => $this->request->getPost('position'),
+                'jabatan' => $this->request->getPost('jabatan'),
                 'alamat' => $this->request->getPost('alamat'),
                 'photo' => $imgName,
             ]);
@@ -164,7 +173,7 @@ class EmployeeController extends BaseController
 
     public function update($id = null)
     {
-        $rules = $this->validation->update($id);
+        $rules = $this->validation->update();
         if (!$this->validate($rules)) {
             return $this->response->setStatusCode(422)->setJSON([
                 'status' => false,
@@ -186,7 +195,7 @@ class EmployeeController extends BaseController
             }
 
             $photoName = $employee['photo'];
-            $photo = $this->request->getFile('photo');
+            $photo = $this->request->getFile('foto');
             if ($photo && $photo->isValid()) {
                 $newPhoto = $photo->getRandomName();
                 $photo->move('uploads', $newPhoto);
@@ -203,7 +212,9 @@ class EmployeeController extends BaseController
 
             $this->model->update($id, [
                 'name' => $this->request->getPost('name'),
-                'position_id' => $this->request->getPost('position'),
+                'jabatan' => $this->request->getPost('jabatan'),
+                'nip' => $this->request->getPost('nip'),
+                'alamat' => $this->request->getPost('alamat'),
                 'photo' => $photoName,
             ]);
 

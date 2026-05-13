@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class EmployeeModel extends Model
 {
-    protected $table = 'employees';
+    protected $table = 'employee';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';

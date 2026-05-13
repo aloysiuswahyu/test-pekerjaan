@@ -14,20 +14,20 @@ class EmployeeValidation
             'name' => [
                 'rules' => 'required|min_length[3]|max_length[100]',
                 'errors' => [
-                    'required' => 'nama wajib diisi',
+                    'required' => 'Nama wajib diisi',
+                ],
+            ],
+            'nip' => [
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'NIP wajib diisi',
                 ],
             ],
 
-            'position' => [
-                'rules' => 'required',
+            'jabatan' => [
+                'rules' => 'required|max_length[100]',
                 'errors' => [
-                    'required' => 'Posisi wajib diisi',
-                ],
-            ],
-            'photo' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Photo wajib diisi',
+                    'required' => 'Jabatan wajib diisi',
                 ],
             ],
         ];
@@ -38,7 +38,7 @@ class EmployeeValidation
     |--------------------------------------------------------------------------
     */
 
-    public function update($id)
+    public function update()
     {
         return [
             'name' => [
@@ -58,12 +58,6 @@ class EmployeeValidation
                 'rules' => 'required|max_length[100]',
                 'errors' => [
                     'required' => 'Jabatan wajib diisi',
-                ],
-            ],
-            'photo' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Photo wajib diisi',
                 ],
             ],
         ];
