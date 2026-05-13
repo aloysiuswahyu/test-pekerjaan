@@ -15,6 +15,10 @@ import { handleApiError } from "@/utils/handleApiError";
 import * as yup from "yup";
 
 const schema = yup.object({
+  name: yup
+  .string()
+  .required("Nama wajib diisi"),
+
 
   username: yup
     .string()
@@ -104,7 +108,27 @@ export default function AddUserPage() {
           <form
             onSubmit={handleSubmit(submit)}
           >
+            <div className="mb-3">
 
+              <label>
+                Nama
+              </label>
+
+              <input
+                type="text"
+                className={`form-control ${
+                  errors.name
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...register("name")}
+              />
+
+              <div className="invalid-feedback">
+                {errors.name?.message}
+              </div>
+
+              </div>
             <div className="mb-3">
 
               <label>

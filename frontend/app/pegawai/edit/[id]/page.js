@@ -11,58 +11,83 @@ import { toast } from "react-toastify";
 export default function EditPegawaiPage() {
 
   const params = useParams();
+
   const router = useRouter();
+
   const cropperRef = useRef(null);
+
   const [image, setImage] = useState(null);
+
   const [croppedImage, setCroppedImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [isCropped, setIsCropped] = useState(true);
+
   const [preview, setPreview] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [isCropped, setIsCropped] = useState(true);
 
   const [errors, setErrors] = useState({});
 
-  const [form, setForm] =
-    useState({
-      nip: "",
-      nama: "",
-      jabatan: "",
-      alamat: "",
-    });
+  const [form, setForm] = useState({
+    nip: "",
+    nama: "",
+    jabatan: "",
+    alamat: "",
+  });
 
- 
+  // get data pegawai
   const getPegawai = async () => {
 
     try {
 
-      const res = await api.get(`/employee/show/${params.id}` );
-      setForm(res.data);
-      const imageUrl = `http://localhost:8080/uploads/pegawai/${res.data.foto}`;
-      setPreview(imageUrl);
-      setCroppedImage(
-        imageUrl
+      const res = await api.get(
+        `/employee/show/${params.id}`
       );
 
+      const pegawai = res.data.data;
+
+      setForm({
+        nip: pegawai.nip || "",
+        nama: pegawai.nama || "",
+        jabatan: pegawai.jabatan || "",
+        alamat: pegawai.alamat || "",
+      });
+
+      // preview image lama
+      if (pegawai.photo) {
+
+        const imageUrl =
+          `${process.env.NEXT_PUBLIC_API_URL}/uploads/pegawai/${pegawai.photo}`;
+
+        setPreview(imageUrl);
+
+        setCroppedImage(imageUrl);
+      }
+
     } catch (err) {
+
+      console.log(err);
+
       toast.error(
         "Gagal mengambil data pegawai"
       );
     }
   };
 
-  
+  // upload image
   const handleImage = (e) => {
 
-    const file =  e.target.files[0];
-    
+    const file = e.target.files[0];
+
     if (!file) return;
 
-    // reset error image
+    // reset error
     setErrors((prev) => ({
       ...prev,
       foto: "",
     }));
 
-    // validation image
+    // validasi type
     const allowedTypes = [
       "image/jpeg",
       "image/jpg",
@@ -70,9 +95,7 @@ export default function EditPegawaiPage() {
     ];
 
     if (
-      !allowedTypes.includes(
-        file.type
-      )
+      !allowedTypes.includes(file.type)
     ) {
 
       setErrors((prev) => ({
@@ -84,8 +107,8 @@ export default function EditPegawaiPage() {
       return;
     }
 
-    // max 2MB
-    if (  file.size > 2 * 1024 * 1024 ) {
+    // validasi size
+    if (file.size > 2 * 1024 * 1024) {
 
       setErrors((prev) => ({
         ...prev,
@@ -100,10 +123,10 @@ export default function EditPegawaiPage() {
 
     reader.onload = () => {
 
-      setImage(
-        reader.result
-      );
+      setImage(reader.result);
+
       setIsCropped(false);
+
       setCroppedImage(null);
     };
 
@@ -113,79 +136,91 @@ export default function EditPegawaiPage() {
   // crop image
   const handleCrop = () => {
 
-    if (  cropperRef.current?.cropper ) 
-      {
+    if (!cropperRef.current?.cropper)
+      return;
 
-      const canvas =  cropperRef.current
-                      .cropper
-                      .getCroppedCanvas({
-                          width: 300,
-                          height: 300,
-                          imageSmoothingQuality:"high",
-                       });
+    const canvas =
+      cropperRef.current.cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+        imageSmoothingQuality: "high",
+      });
 
-      if (canvas) {
+    if (canvas) {
 
-        const cropped =
-          canvas.toDataURL(
-            "image/jpeg",
-            0.9
-          );
-
-        setCroppedImage(
-          cropped
+      const cropped =
+        canvas.toDataURL(
+          "image/jpeg",
+          0.9
         );
 
-        setPreview(
-          cropped
-        );
+      setCroppedImage(cropped);
 
-        setIsCropped(true);
-      }
+      setPreview(cropped);
+
+      setIsCropped(true);
     }
   };
 
-  // crop ulang
+  // reset crop
   const resetCrop = () => {
 
     setIsCropped(false);
+
+    setCroppedImage(null);
   };
 
-  // validation form
+  // validasi form
   const validateForm = () => {
 
     const newErrors = {};
 
     if (!form.nip.trim()) {
-      newErrors.nip = "NIP wajib diisi";
+      newErrors.nip =
+        "NIP wajib diisi";
     }
 
     if (!form.nama.trim()) {
-      newErrors.nama = "Nama wajib diisi";
+      newErrors.nama =
+        "Nama wajib diisi";
     }
 
     if (!form.jabatan.trim()) {
-      newErrors.jabatan =  "Jabatan wajib diisi";
+      newErrors.jabatan =
+        "Jabatan wajib diisi";
     }
 
     if (!form.alamat.trim()) {
-      newErrors.alamat = "Alamat wajib diisi";
+      newErrors.alamat =
+        "Alamat wajib diisi";
     }
 
     setErrors(newErrors);
 
-    return Object.keys(
-      newErrors
-    ).length === 0;
+    return (
+      Object.keys(newErrors).length === 0
+    );
   };
 
-  // submit
+  // submit update
   const submit = async (e) => {
 
     e.preventDefault();
 
-    // validasi
+    // validasi form
     if (!validateForm()) {
+      return;
+    }
+
+    // validasi crop
+    if (image && !croppedImage) {
+
+      setErrors((prev) => ({
+        ...prev,
+        foto:
+          "Silakan crop gambar terlebih dahulu",
+      }));
+
       return;
     }
 
@@ -195,15 +230,9 @@ export default function EditPegawaiPage() {
 
       const data = new FormData();
 
-      data.append(
-        "nip",
-        form.nip
-      );
+      data.append("nip", form.nip);
 
-      data.append(
-        "nama",
-        form.nama
-      );
+      data.append("nama", form.nama);
 
       data.append(
         "jabatan",
@@ -216,13 +245,16 @@ export default function EditPegawaiPage() {
       );
 
       // upload hasil crop
-      if ( croppedImage && croppedImage.startsWith( "data:image" )) 
-      {
+      if (
+        croppedImage &&
+        croppedImage.startsWith(
+          "data:image"
+        )
+      ) {
 
-        const blob =  await fetch( croppedImage )
-                      .then((r) =>
-                           r.blob()
-                      );
+        const blob = await fetch(
+          croppedImage
+        ).then((r) => r.blob());
 
         data.append(
           "foto",
@@ -231,16 +263,37 @@ export default function EditPegawaiPage() {
         );
       }
 
-      await api.post( `/pegawai/${params.id}`, data );
+      // debug formdata
+      for (let pair of data.entries()) {
+
+        console.log(
+          pair[0],
+          pair[1]
+        );
+      }
+
+      // update data
+      await api.put(
+        `/employee/edit/${params.id}`,
+        data,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
+      );
 
       toast.success(
         "Pegawai berhasil diupdate"
       );
 
-      router.push("/pegawai" );
+      router.push("/pegawai");
 
     } catch (err) {
-    
+
+      console.log(err);
+
       toast.error(
         "Gagal update pegawai"
       );
@@ -248,7 +301,6 @@ export default function EditPegawaiPage() {
     } finally {
 
       setLoading(false);
-
     }
   };
 
@@ -259,7 +311,6 @@ export default function EditPegawaiPage() {
   }, []);
 
   return (
-
     <Layout>
 
       <div className="card shadow-sm">
@@ -270,11 +321,9 @@ export default function EditPegawaiPage() {
             Edit Pegawai
           </h3>
 
-          <form
-            onSubmit={submit}
-          >
+          <form onSubmit={submit}>
 
-            {/* preview image lama */}
+            {/* preview image */}
             {preview && (
 
               <div className="mb-4">
@@ -296,7 +345,6 @@ export default function EditPegawaiPage() {
                 </div>
 
               </div>
-
             )}
 
             {/* NIP */}
@@ -317,8 +365,7 @@ export default function EditPegawaiPage() {
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    nip:
-                      e.target.value
+                    nip: e.target.value,
                   })
                 }
               />
@@ -347,8 +394,7 @@ export default function EditPegawaiPage() {
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    nama:
-                      e.target.value
+                    nama: e.target.value,
                   })
                 }
               />
@@ -378,7 +424,7 @@ export default function EditPegawaiPage() {
                   setForm({
                     ...form,
                     jabatan:
-                      e.target.value
+                      e.target.value,
                   })
                 }
               />
@@ -397,18 +443,18 @@ export default function EditPegawaiPage() {
               </label>
 
               <textarea
+                rows="3"
                 className={`form-control ${
                   errors.alamat
                     ? "is-invalid"
                     : ""
                 }`}
-                rows="3"
                 value={form.alamat}
                 onChange={(e) =>
                   setForm({
                     ...form,
                     alamat:
-                      e.target.value
+                      e.target.value,
                   })
                 }
               />
@@ -450,38 +496,20 @@ export default function EditPegawaiPage() {
 
                 <Cropper
                   src={image}
-
                   style={{
                     height: 400,
                     width: "100%",
                   }}
-
                   aspectRatio={1}
-
                   guides={true}
-
                   viewMode={1}
-
                   dragMode="move"
-
-                  cropBoxResizable={
-                    false
-                  }
-
-                  cropBoxMovable={
-                    false
-                  }
-
+                  cropBoxResizable={false}
+                  cropBoxMovable={false}
                   background={false}
-
                   responsive={true}
-
                   autoCropArea={1}
-
-                  checkOrientation={
-                    false
-                  }
-
+                  checkOrientation={false}
                   ref={cropperRef}
                 />
 
@@ -496,7 +524,6 @@ export default function EditPegawaiPage() {
                 </button>
 
               </div>
-
             )}
 
             {/* hasil crop */}
@@ -534,7 +561,6 @@ export default function EditPegawaiPage() {
                 </button>
 
               </div>
-
             )}
 
             <button

@@ -29,6 +29,10 @@ import * as yup from "yup";
 // validation
 const schema = yup.object({
 
+  name: yup
+    .string()
+    .required("Nama wajib diisi"),
+
   username: yup
     .string()
     .required("Username wajib diisi"),
@@ -66,6 +70,7 @@ export default function EditUserPage() {
       const user = res.data.data;
 
       setValue("username", user.username);
+      setValue("name", user.name);
 
       // password kosong saat edit
       setValue("password", "");
@@ -154,6 +159,30 @@ export default function EditUserPage() {
                   onSubmit={handleSubmit(submit)}
                 >
 
+                    <div className="mb-3">
+
+                    <label className="form-label">
+                      nama
+                    </label>
+
+                    <input
+                      type="text"
+                      className={`form-control ${
+                        errors.name
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      placeholder="Masukkan Nama"
+                      {...register("name")}
+                    />
+
+                    <div className="invalid-feedback">
+
+                      {errors.name?.message}
+
+                    </div>
+
+                    </div>
                   {/* username */}
                   <div className="mb-3">
 

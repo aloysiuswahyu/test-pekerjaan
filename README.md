@@ -78,14 +78,9 @@ php spark migrate
 ## 4. Jalankan Seeder
 
 ```bash
-php spark db:seed
+php spark db:seed UserSeeder
 ```
 
-Atau jika menggunakan seeder tertentu:
-
-```bash
-php spark db:seed NamaSeeder
-```
 
 ---
 

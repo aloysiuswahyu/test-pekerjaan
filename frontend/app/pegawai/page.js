@@ -23,7 +23,7 @@ export default function PegawaiPage() {
 
       const res = await api.get("/employee/list");
 
-      setPegawai(res.data || []);
+      setPegawai(res.data.data || []);
 
     } catch (err) {
 
@@ -51,7 +51,7 @@ export default function PegawaiPage() {
           filterText.toLowerCase()
         ) ||
 
-      item.username
+      item.nip
         ?.toLowerCase()
         .includes(
           filterText.toLowerCase()
@@ -127,8 +127,13 @@ export default function PegawaiPage() {
     },
 
     {
-      name: "Username",
-      selector: (row) => row.username,
+      name: "NIP",
+      selector: (row) => row.nip,
+      sortable: true,
+    },
+    {
+      name: "Nama",
+      selector: (row) => row.name,
       sortable: true,
     },
 
