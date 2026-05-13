@@ -232,7 +232,7 @@ export default function EditPegawaiPage() {
 
       data.append("nip", form.nip);
 
-      data.append("nama", form.nama);
+      data.append("name", form.nama);
 
       data.append(
         "jabatan",
