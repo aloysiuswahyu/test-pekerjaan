@@ -57,7 +57,7 @@ export default function EditPegawaiPage() {
       if (pegawai.photo) {
 
         const imageUrl =
-          `${process.env.NEXT_PUBLIC_API_URL}/uploads/pegawai/${pegawai.photo}`;
+          `${process.env.NEXT_PUBLIC_API_URL}/uploads/${pegawai.photo}`;
 
         setPreview(imageUrl);
 

@@ -97,13 +97,13 @@ class EmployeeController extends BaseController
         $this->db->transBegin();
         $imgName = '';
         try {
-            // $img = $this->request->getFile('foto');
+            $img = $this->request->getFile('foto');
 
-            // if ($img && $img->isValid()) {
-            //     $imgName = $img->getRandomName();
+            if ($img && $img->isValid()) {
+                $imgName = $img->getRandomName();
 
-            //     $img->move('uploads', $imgName);
-            // }
+                $img->move('uploads', $imgName);
+            }
             // echo '<pre>';
             // print_r([
             //     'name' => $this->request->getPost('name'),
